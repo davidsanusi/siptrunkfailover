@@ -1,6 +1,6 @@
-SIPGW="172.16.67.121"
-BACKUPGW="192.168.4.1"
-INTERNET="8.8.8.8"
+SIPGW="<SIPGW_IPADDRESS>"
+BACKUPGW="<BACKUPGW_IPADDRESS>"
+INTERNET="8.8.8.8" # Any ALWAYS reachable internet client will suffice here
 INT0=/etc/sysconfig/network-scripts/ifcfg-eth0
 INT1=/etc/sysconfig/network-scripts/ifcfg-eth1
 LOGFILE=/root/sipTrunkStatus.log
@@ -8,8 +8,8 @@ MYHOST=`hostname`
 
 function activateBackupLink() {
         # This block executes if SIPGW is NOT reachable
-        sed -i 's/#//' $INT0                                            # Uncomment #192.168.4.1 in $INT0
-        sed -i '/GATEWAY/s/^#*/#/' $INT1                                # Comment out 172.16.67.121 in $INT1
+        sed -i 's/#//' $INT0                                            # Uncomment #<BACKUPGW_IPADDRESS> in $INT0
+        sed -i '/GATEWAY/s/^#*/#/' $INT1                                # Comment out <SIPGW_IPADDRESS> in $INT1
         service network restart > /dev/null                             # Restart network service
         TIMECHECK=$(echo `date +%b\ %d\ %Y\ %r`)
         echo "$TIMECHECK: $MYHOST Failover completed. $BACKUPGW is now the active gateway." >> $LOGFILE
@@ -17,8 +17,8 @@ function activateBackupLink() {
 
 function activateMainLink() {
         # This block executes SIPGW is reachable
-        sed -i '/ GATEWAY /s/^/#/' $INT0                                # Comment 192.168.4.1 in $INT0
-        sed -i 's/#//' $INT1                                            # Uncomment 172.16.67.121 in INT1
+        sed -i '/ GATEWAY /s/^/#/' $INT0                                # Comment <BACKUPGW_IPADDRESS> in $INT0
+        sed -i 's/#//' $INT1                                            # Uncomment <SIPGW_IPADDRESS> in INT1
         service network restart > /dev/null                             # Restart network service
         TIMECHECK=$(echo `date +%b\ %d\ %Y\ %r`)
         echo "$TIMECHECK: $MYHOST Link restored. $SIPGW is now reachable." >> $LOGFILE
