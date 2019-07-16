@@ -1,6 +1,6 @@
 SIPGW="<SIPGW_IPADDRESS>"
 BACKUPGW="<BACKUPGW_IPADDRESS>"
-INTERNET="8.8.8.8" # Any ALWAYS reachable internet client will suffice here
+INTERNET="8.8.8.8" # Any internet client that is ALWAYS reachable will suffice here
 INT0=/etc/sysconfig/network-scripts/ifcfg-eth0
 INT1=/etc/sysconfig/network-scripts/ifcfg-eth1
 LOGFILE=/root/sipTrunkStatus.log
@@ -16,7 +16,7 @@ function activateBackupLink() {
 }
 
 function activateMainLink() {
-        # This block executes SIPGW is reachable
+        # This block executes if SIPGW is reachable
         sed -i '/ GATEWAY /s/^/#/' $INT0                                # Comment <BACKUPGW_IPADDRESS> in $INT0
         sed -i 's/#//' $INT1                                            # Uncomment <SIPGW_IPADDRESS> in INT1
         service network restart > /dev/null                             # Restart network service
